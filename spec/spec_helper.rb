@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "foobara/files_generator"
 
 RSpec.configure do |config|

@@ -13,9 +13,9 @@ gem "rake"
 
 group :development do
   gem "foobara-rubocop-rules", github: "foobara/rubocop-rules"
+  gem "guard-rspec"
   gem "rubocop-rake"
   gem "rubocop-rspec"
-  gem "guard-rspec"
 end
 
 group :development, :test do
