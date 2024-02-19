@@ -1,4 +1,4 @@
-require_relative "lib/foobara/files_generator/version"
+require_relative "src/version"
 
 Gem::Specification.new do |spec|
   spec.name = "foobara-files-generator"

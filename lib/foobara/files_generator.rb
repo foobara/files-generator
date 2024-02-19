@@ -1,8 +1,3 @@
-require_relative "files_generator/version"
+require "foobara/all"
 
-module Foobara
-  module FilesGenerator
-    class Error < StandardError; end
-    # Your code goes here...
-  end
-end
+Foobara::Util.require_directory "#{__dir__}/../../src"
