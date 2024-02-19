@@ -26,6 +26,13 @@ TODO: Write usage instructions here
 
 ## Development
 
+For local development, for now, run the following:
+
+```
+bundle config set local.foobara ../foobara
+bundle config set disable_local_branch_check true
+```
+
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can
 also run `bin/console` for an interactive prompt that will allow you to experiment.
 
