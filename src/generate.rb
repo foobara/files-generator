@@ -12,12 +12,6 @@ module Foobara
         # :nocov:
       end
 
-      def templates_dir
-        # :nocov:
-        raise "subclass responsibility"
-        # :nocov:
-      end
-
       def elements_to_generate
         @elements_to_generate ||= Set.new
       end

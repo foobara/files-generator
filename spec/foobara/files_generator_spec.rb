@@ -49,14 +49,6 @@ RSpec.describe Foobara::FilesGenerator do
       def template_path
         ["spec", "fixtures", "templates", "whatever.txt.erb"]
       end
-
-      def ==(_other)
-        whatever == other.whatever
-      end
-
-      def hash
-        whatever.hash
-      end
     end
   end
 
@@ -78,10 +70,6 @@ RSpec.describe Foobara::FilesGenerator do
 
       def base_generator
         WhateverGenerator
-      end
-
-      def templates_dir
-        "#{Dir.pwd}/spec/fixtures/templates"
       end
 
       def add_whatever_to_elements_to_generate

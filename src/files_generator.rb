@@ -117,9 +117,7 @@ module Foobara
     end
 
     def ==(_other)
-      # :nocov:
-      raise "subclass responsibility"
-      # :nocov:
+      relevant_manifest == _other.relevant_manifest
     end
 
     def eql?(other)
@@ -127,9 +125,7 @@ module Foobara
     end
 
     def hash
-      # :nocov:
-      raise "subclass responsibility"
-      # :nocov:
+      relevant_manifest.hash
     end
   end
 end
