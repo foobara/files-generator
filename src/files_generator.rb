@@ -57,9 +57,7 @@ module Foobara
     end
 
     def dependencies
-      # :nocov:
-      raise "Subclass responsibility"
-      # :nocov:
+      []
     end
 
     def generate(elements_to_generate)
@@ -84,7 +82,7 @@ module Foobara
         path = path.join("/")
       end
 
-      Pathname.new("#{__dir__}/../templates/#{path}").cleanpath.to_s
+      Pathname.new("#{Dir.pwd}/#{path}").cleanpath.to_s
     end
 
     def template_string
@@ -102,6 +100,20 @@ module Foobara
       size = target_path.size - 1
 
       (["../"] * size).join
+    end
+
+    def method_missing(method_name, *, &)
+      if relevant_manifest.respond_to?(method_name)
+        relevant_manifest.send(method_name, *, &)
+      else
+        # :nocov:
+        super
+        # :nocov:
+      end
+    end
+
+    def respond_to_missing?(method_name, include_private = false)
+      relevant_manifest.respond_to?(method_name, include_private)
     end
 
     def ==(_other)
