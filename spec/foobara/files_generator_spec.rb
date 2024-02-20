@@ -78,10 +78,8 @@ RSpec.describe Foobara::FilesGenerator do
   let(:bar) { bar_class.new("barrrr") }
   let(:output_directory) { "#{Dir.pwd}/tmp/whatever/" }
 
-  let(:whatever_generator1) do
-    stub_class "WhateverGenerator1", described_class do
-      alias_method :whatever, :relevant_manifest
-
+  let(:base_generator_class) do
+    stub_class "BaseGenerator", described_class do
       class << self
         def manifest_to_generator_classes(manifest)
           case manifest
@@ -98,12 +96,22 @@ RSpec.describe Foobara::FilesGenerator do
         end
       end
 
+      def templates_dir
+        "#{Dir.pwd}/spec/fixtures/templates"
+      end
+    end
+  end
+
+  let(:whatever_generator1) do
+    stub_class "WhateverGenerator1", base_generator_class do
+      alias_method :whatever, :relevant_manifest
+
       def target_path
         ["whatevers1", "#{foo.foo}.txt"]
       end
 
       def template_path
-        ["spec", "fixtures", "templates", "whatever1.txt.erb"]
+        ["whatever1.txt.erb"]
       end
 
       def dependencies
@@ -120,7 +128,7 @@ RSpec.describe Foobara::FilesGenerator do
   end
 
   let(:whatever_generator2) do
-    stub_class "WhateverGenerator2", described_class do
+    stub_class "WhateverGenerator2", base_generator_class do
       alias_method :whatever, :relevant_manifest
 
       def target_path
@@ -128,13 +136,13 @@ RSpec.describe Foobara::FilesGenerator do
       end
 
       def template_path
-        ["spec", "fixtures", "templates", "whatever2.txt.erb"]
+        "whatever2.txt.erb"
       end
     end
   end
 
   let(:foo_generator) do
-    stub_class "FooGenerator", described_class do
+    stub_class "FooGenerator", base_generator_class do
       alias_method :foo, :relevant_manifest
 
       def target_path
@@ -142,12 +150,12 @@ RSpec.describe Foobara::FilesGenerator do
       end
 
       def template_path
-        ["spec", "fixtures", "templates", "foo.txt.erb"]
+        "foo.txt.erb"
       end
     end
   end
   let(:bar_generator) do
-    stub_class "BarGenerator", described_class do
+    stub_class "BarGenerator", base_generator_class do
       alias_method :bar, :relevant_manifest
 
       def target_path
@@ -155,7 +163,7 @@ RSpec.describe Foobara::FilesGenerator do
       end
 
       def template_path
-        ["spec", "fixtures", "templates", "bar.txt.erb"]
+        "bar.txt.erb"
       end
     end
   end
@@ -177,7 +185,7 @@ RSpec.describe Foobara::FilesGenerator do
       end
 
       def base_generator
-        WhateverGenerator1
+        BaseGenerator
       end
 
       def add_whatever_to_elements_to_generate
@@ -210,6 +218,7 @@ RSpec.describe Foobara::FilesGenerator do
   end
 
   before do
+    base_generator_class
     whatever_generator1
     whatever_generator2
     foo_generator

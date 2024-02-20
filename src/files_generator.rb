@@ -82,7 +82,13 @@ module Foobara
         path = path.join("/")
       end
 
-      Pathname.new("#{Dir.pwd}/#{path}").cleanpath.to_s
+      Pathname.new("#{templates_dir}/#{path}").cleanpath.to_s
+    end
+
+    def templates_dir
+      # :nocov:
+      "#{Dir.pwd}/templates"
+      # :nocov:
     end
 
     def template_string
