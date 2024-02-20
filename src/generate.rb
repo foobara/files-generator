@@ -68,16 +68,6 @@ module Foobara
         @paths_to_source_code ||= {}
       end
 
-      def generate_base_files
-        Dir["#{templates_dir}/base/**/*.ts"].each do |file_path|
-          pathname = Pathname.new(file_path)
-
-          key = pathname.relative_path_from(templates_dir)
-
-          paths_to_source_code[key.to_s] = File.read(file_path)
-        end
-      end
-
       def generate_generated_files_json
         paths_to_source_code["foobara-generated.json"] = "[\n#{
           paths_to_source_code.keys.sort.map { |k| "  \"#{k}\"" }.join(",\n")

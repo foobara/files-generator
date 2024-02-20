@@ -22,6 +22,8 @@ RSpec.describe Foobara::FilesGenerator do
     end
   end
 
+  let(:generator) { whatever_generator1.new(whatever) }
+
   let(:foo_class) do
     stub_class "Foo" do
       attr_accessor :foo
@@ -57,7 +59,9 @@ RSpec.describe Foobara::FilesGenerator do
       end
 
       def eql?(other)
+        # :nocov:
         self == other
+        # :nocov:
       end
 
       def hash
@@ -104,8 +108,12 @@ RSpec.describe Foobara::FilesGenerator do
 
       def dependencies
         [
-          FooGenerator.new(foo),
-          bar
+          generator_for(FooGenerator.new(foo)),
+          generator_for(foo),
+          foo,
+          bar,
+          self,
+          relevant_manifest
         ]
       end
     end
@@ -234,5 +242,22 @@ RSpec.describe Foobara::FilesGenerator do
         "whatevers2/barrrr.txt"
       ]
     )
+  end
+
+  describe "#target_dir" do
+    subject { generator.target_dir }
+
+    it { is_expected.to eq(["whatevers1"]) }
+  end
+
+  describe "#path_to_root" do
+    subject { generator.path_to_root }
+
+    it { is_expected.to eq("../") }
+  end
+
+  it "delegates to relevant manifest" do
+    expect(generator).to respond_to(:bar)
+    expect(generator).to_not respond_to(:baz)
   end
 end

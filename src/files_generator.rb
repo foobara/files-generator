@@ -116,8 +116,8 @@ module Foobara
       relevant_manifest.respond_to?(method_name, include_private)
     end
 
-    def ==(_other)
-      relevant_manifest == _other.relevant_manifest
+    def ==(other)
+      relevant_manifest == other.relevant_manifest
     end
 
     def eql?(other)
