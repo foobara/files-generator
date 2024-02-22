@@ -60,7 +60,7 @@ module Foobara
       def generate_element
         return unless element_to_generate.applicable?
 
-        paths_to_source_code[element_to_generate.target_path.join("/")] =
+        paths_to_source_code[Util.array(element_to_generate.target_path).join("/")] =
           element_to_generate.generate(elements_to_generate)
       end
 
