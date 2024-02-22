@@ -33,9 +33,13 @@ module Foobara
     end
 
     def target_path
-      # :nocov:
-      raise "Subclass responsibility"
-      # :nocov:
+      *path, file = template_path
+
+      if file.end_with?(".erb")
+        [*path, file[0..-5]]
+      else
+        raise "expected a .erb extension. Maybe override #target_path"
+      end
     end
 
     def target_dir
