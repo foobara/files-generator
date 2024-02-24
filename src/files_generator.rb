@@ -1,3 +1,5 @@
+require "erb"
+
 module Foobara
   class FilesGenerator
     include TruncatedInspect
