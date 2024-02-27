@@ -1,6 +1,12 @@
 module Foobara
   module Generators
     class WriteGeneratedFilesToDisk < Foobara::Command
+      class << self
+        def generator_key
+          nil
+        end
+      end
+
       inputs do
         output_directory :string, :required
       end
