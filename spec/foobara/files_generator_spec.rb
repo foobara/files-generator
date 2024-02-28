@@ -86,7 +86,8 @@ RSpec.describe Foobara::FilesGenerator do
           when Whatever
             [
               WhateverGenerator1,
-              WhateverGenerator2
+              WhateverGenerator2,
+              ReadmeGenerator
             ]
           when Foo
             FooGenerator
@@ -168,6 +169,14 @@ RSpec.describe Foobara::FilesGenerator do
     end
   end
 
+  let(:readme_generator) do
+    stub_class "ReadmeGenerator", base_generator_class do
+      def template_path
+        "README.md.erb"
+      end
+    end
+  end
+
   let(:generate_whatever) do
     stub_class "GenerateWhatever", Foobara::Generators::Generate do
       inputs whatever: :duck
@@ -221,6 +230,7 @@ RSpec.describe Foobara::FilesGenerator do
     base_generator_class
     whatever_generator1
     whatever_generator2
+    readme_generator
     foo_generator
     bar_generator
     generate_whatever
@@ -243,13 +253,12 @@ RSpec.describe Foobara::FilesGenerator do
     expect(
       File.read("#{output_directory}bars/barrrr.txt").chomp
     ).to eq("Bar is #{bar.bar}")
-    expect(JSON.parse(File.read("#{output_directory}foobara-generated.json"))).to eq(
-      [
-        "bars/barrrr.txt",
-        "foos/fooooo.txt",
-        "whatevers1/fooooo.txt",
-        "whatevers2/barrrr.txt"
-      ]
+    expect(JSON.parse(File.read("#{output_directory}foobara-generated.json"))).to contain_exactly(
+      "README.md",
+      "bars/barrrr.txt",
+      "foos/fooooo.txt",
+      "whatevers1/fooooo.txt",
+      "whatevers2/barrrr.txt"
     )
   end
 

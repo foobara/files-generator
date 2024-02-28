@@ -40,7 +40,9 @@ module Foobara
       if file.end_with?(".erb")
         [*path, file[0..-5]]
       else
+        # :nocov:
         raise "expected a .erb extension. Maybe override #target_path"
+        # :nocov:
       end
     end
 
