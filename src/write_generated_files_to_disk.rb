@@ -11,7 +11,7 @@ module Foobara
         output_directory :string, :required
       end
 
-      result :associative_array
+      result :string
 
       attr_accessor :paths_to_source_code
 
@@ -60,6 +60,10 @@ module Foobara
         else
           "foobara-generated.json"
         end
+      end
+
+      def stats
+        "Wrote #{paths_to_source_code.size} files to #{output_directory}"
       end
     end
   end

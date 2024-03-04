@@ -217,7 +217,7 @@ RSpec.describe Foobara::FilesGenerator do
         delete_old_files_if_needed
         write_all_files_to_disk
 
-        paths_to_source_code
+        stats
       end
 
       def generate_whatever
@@ -239,7 +239,7 @@ RSpec.describe Foobara::FilesGenerator do
 
   it "generates files" do
     expect(outcome).to be_success
-    expect(result).to be_a(Hash)
+    expect(result).to match(/\d+ files to /)
 
     expect(
       File.read("#{output_directory}whatevers1/fooooo.txt").chomp
