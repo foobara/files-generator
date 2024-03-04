@@ -67,12 +67,6 @@ module Foobara
       def paths_to_source_code
         @paths_to_source_code ||= {}
       end
-
-      def generate_generated_files_json
-        paths_to_source_code["foobara-generated.json"] = "[\n#{
-          paths_to_source_code.keys.sort.map { |k| "  \"#{k}\"" }.join(",\n")
-        }\n]\n"
-      end
     end
   end
 end

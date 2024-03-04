@@ -188,8 +188,6 @@ RSpec.describe Foobara::FilesGenerator do
           generate_element
         end
 
-        generate_generated_files_json
-
         paths_to_source_code
       end
 
@@ -214,6 +212,8 @@ RSpec.describe Foobara::FilesGenerator do
 
       def execute
         generate_whatever
+        generate_generated_files_json
+
         delete_old_files_if_needed
         write_all_files_to_disk
 
