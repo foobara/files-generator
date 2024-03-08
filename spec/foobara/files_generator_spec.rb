@@ -95,10 +95,14 @@ RSpec.describe Foobara::FilesGenerator do
             BarGenerator
           end
         end
+
+        def templates_dir
+          "#{Dir.pwd}/spec/fixtures/templates"
+        end
       end
 
       def templates_dir
-        "#{Dir.pwd}/spec/fixtures/templates"
+        self.class.templates_dir
       end
     end
   end
@@ -182,6 +186,7 @@ RSpec.describe Foobara::FilesGenerator do
       inputs whatever: :duck
 
       def execute
+        include_non_templated_files
         add_whatever_to_elements_to_generate
 
         each_element_to_generate do
@@ -257,6 +262,7 @@ RSpec.describe Foobara::FilesGenerator do
       "README.md",
       "bars/barrrr.txt",
       "foos/fooooo.txt",
+      "non_templated.txt",
       "whatevers1/fooooo.txt",
       "whatevers2/barrrr.txt"
     )
