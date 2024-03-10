@@ -55,7 +55,9 @@ RSpec.describe Foobara::FilesGenerator do
       end
 
       def ==(other)
+        # :nocov:
         other.is_a?(Foo) && bar == other.bar
+        # :nocov:
       end
 
       def eql?(other)
