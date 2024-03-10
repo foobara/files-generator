@@ -131,7 +131,7 @@ module Foobara
     end
 
     def ==(other)
-      relevant_manifest == other.relevant_manifest
+      self.class == other.class && relevant_manifest == other.relevant_manifest
     end
 
     def eql?(other)
