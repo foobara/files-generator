@@ -36,7 +36,9 @@ module Foobara
       end
 
       def write_all_files_to_disk
-        write_file_to_disk(generated_files_json_filename, paths_to_source_code[generated_files_json_filename])
+        if paths_to_source_code.key?(generated_files_json_filename)
+          write_file_to_disk(generated_files_json_filename, paths_to_source_code[generated_files_json_filename])
+        end
 
         paths_to_source_code.map do |path, contents|
           Thread.new { write_file_to_disk(path, contents) unless path == generated_files_json_filename }
