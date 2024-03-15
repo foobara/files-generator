@@ -68,8 +68,12 @@ module Foobara
       []
     end
 
+    def dependencies_to_generate
+      dependencies
+    end
+
     def generate(elements_to_generate)
-      dependencies.each do |dependency|
+      dependencies_to_generate.each do |dependency|
         elements_to_generate << dependency
       end
 
