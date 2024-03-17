@@ -224,11 +224,17 @@ RSpec.describe Foobara::FilesGenerator do
         delete_old_files_if_needed
         write_all_files_to_disk
 
+        run_post_generation_tasks
+
         stats
       end
 
       def generate_whatever
         self.paths_to_source_code = run_subcommand!(GenerateWhatever, whatever:)
+      end
+
+      def run_post_generation_tasks
+        run_cmd_and_write_output("echo hi")
       end
     end
   end
