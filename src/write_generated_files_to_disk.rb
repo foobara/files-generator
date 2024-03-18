@@ -65,7 +65,7 @@ module Foobara
       end
 
       # TODO: probably needs a better name
-      def run_cmd_and_write_output(cmd)
+      def run_cmd_and_write_output(cmd, raise_if_fails: true)
         Open3.popen3(cmd) do |_stdin, stdout, stderr, wait_thr|
           loop do
             line = stdout.gets
@@ -77,7 +77,11 @@ module Foobara
           exit_status = wait_thr.value
           unless exit_status.success?
             # :nocov:
-            raise "could not #{cmd}\n#{stderr.read}"
+            if raise_if_fails
+              raise "could not #{cmd}\n#{stderr.read}"
+            else
+              warn "WARNING: could not #{cmd}\n#{stderr.read}"
+            end
             # :nocov:
           end
         end
