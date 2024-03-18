@@ -87,6 +87,28 @@ module Foobara
         end
       end
 
+      def run_cmd_and_return_output(cmd)
+        retval = ""
+
+        Open3.popen3(cmd) do |_stdin, stdout, stderr, wait_thr|
+          loop do
+            line = stdout.gets
+            break unless line
+
+            retval << line
+          end
+
+          exit_status = wait_thr.value
+          unless exit_status.success?
+            # :nocov:
+            raise "could not #{cmd}\n#{stderr.read}"
+          end
+          # :nocov:
+        end
+
+        retval
+      end
+
       def stats
         "Wrote #{paths_to_source_code.size} files to #{output_directory}"
       end

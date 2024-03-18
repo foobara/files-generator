@@ -235,6 +235,7 @@ RSpec.describe Foobara::FilesGenerator do
 
       def run_post_generation_tasks
         run_cmd_and_write_output("echo hi")
+        run_cmd_and_return_output("echo hi")
       end
     end
   end
