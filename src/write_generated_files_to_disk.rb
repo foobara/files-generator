@@ -1,3 +1,5 @@
+require "open3"
+
 module Foobara
   module Generators
     class WriteGeneratedFilesToDisk < Foobara::Command
