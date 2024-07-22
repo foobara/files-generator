@@ -1,3 +1,7 @@
+## [0.0.2] - 2024-07-22
+
+- Add a bundle_install helper
+
 ## [0.0.1] - 2024-06-15
 
 - Add Apache-2.0 license

@@ -210,6 +210,8 @@ RSpec.describe Foobara::FilesGenerator do
 
   let(:write_whatever_to_disk) do
     stub_class "WriteWhateverToDisk", Foobara::Generators::WriteGeneratedFilesToDisk do
+      include Foobara::FilesGenerator::BundlerActions
+
       inputs do
         whatever :duck
         output_directory :string, :required
@@ -234,6 +236,7 @@ RSpec.describe Foobara::FilesGenerator do
       end
 
       def run_post_generation_tasks
+        bundle_install
         run_cmd_and_write_output("echo hi")
         run_cmd_and_return_output("echo hi")
       end
