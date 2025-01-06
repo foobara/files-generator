@@ -69,7 +69,11 @@ module Foobara
     end
 
     def dependencies_to_generate
-      Util.array(dependencies)
+      if dependencies.is_a?(::Set)
+        dependencies
+      else
+        Util.array(dependencies)
+      end
     end
 
     def generate(elements_to_generate)

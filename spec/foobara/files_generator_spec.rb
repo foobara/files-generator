@@ -124,7 +124,7 @@ RSpec.describe Foobara::FilesGenerator do
       end
 
       def dependencies
-        [
+        Set[
           generator_for(FooGenerator.new(foo)),
           generator_for(foo),
           foo,
