@@ -69,7 +69,7 @@ module Foobara
     end
 
     def dependencies_to_generate
-      dependencies
+      Util.array(dependencies)
     end
 
     def generate(elements_to_generate)

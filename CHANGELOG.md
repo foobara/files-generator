@@ -1,3 +1,7 @@
+## [0.0.4] - 2025-01-06
+
+- Bump Ruby to 3.4.1
+
 ## [0.0.3] - 2024-07-22
 
 - Add a bundle_install helper

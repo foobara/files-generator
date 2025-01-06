@@ -1,5 +1,7 @@
+require_relative "version"
+
 source "https://rubygems.org"
-ruby File.read("#{__dir__}/.ruby-version")
+ruby Foobara::FilesGenerator::MINIMUM_RUBY_VERSION
 
 gemspec
 
