@@ -87,6 +87,12 @@ module Foobara
             # :nocov:
           end
         end
+      rescue Errno::ENOENT
+        if raise_if_fails
+          raise
+        else
+          warn "WARNING: could not run: #{cmd}\nMaybe it is not installed?"
+        end
       end
 
       def run_cmd_and_return_output(cmd)

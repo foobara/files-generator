@@ -1,3 +1,7 @@
+## [0.0.5] - 2025-05-03
+
+- Honor raise_if_fails even when the command to shell out to doesn't exist
+
 ## [0.0.4] - 2025-01-06
 
 - Bump Ruby to 3.4.1
