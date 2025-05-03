@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    foobara-files-generator (0.0.6)
+    foobara-files-generator (0.0.7)
       foobara (~> 0.0.116)
 
 GEM

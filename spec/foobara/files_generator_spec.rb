@@ -239,7 +239,10 @@ RSpec.describe Foobara::FilesGenerator do
 
       def run_post_generation_tasks
         bundle_install
-        run_cmd_and_write_output("echo hi")
+        exit_status = run_cmd_and_write_output("echo hi")
+
+        raise unless exit_status&.success?
+
         run_cmd_and_return_output("echo hi")
       end
     end

@@ -3,6 +3,8 @@ require "open3"
 module Foobara
   module Generators
     class WriteGeneratedFilesToDisk < Foobara::Command
+      class CouldNotExecuteError < StandardError; end
+
       class << self
         def generator_key
           nil
@@ -77,22 +79,30 @@ module Foobara
           end
 
           exit_status = wait_thr.value
+
           unless exit_status.success?
             # :nocov:
+            message = "Could not #{cmd}\n#{stderr.read}"
             if raise_if_fails
-              raise "could not #{cmd}\n#{stderr.read}"
+              raise CouldNotExecuteError, message
             else
-              warn "WARNING: could not #{cmd}\n#{stderr.read}"
+              warn "WARNING: #{message}"
             end
             # :nocov:
           end
+
+          exit_status
         end
       rescue Errno::ENOENT
+        message = "Could not run: #{cmd}\nMaybe it is not installed?"
+
         if raise_if_fails
-          raise
+          raise CouldNotExecuteError, message
         else
-          warn "WARNING: could not run: #{cmd}\nMaybe it is not installed?"
+          warn "WARNING: #{message}"
         end
+
+        nil
       end
 
       def run_cmd_and_return_output(cmd)
@@ -109,12 +119,12 @@ module Foobara
           exit_status = wait_thr.value
           unless exit_status.success?
             # :nocov:
-            raise "could not #{cmd}\n#{stderr.read}"
+            raise CouldNotExecuteError, "could not #{cmd}\n#{stderr.read}"
           end
           # :nocov:
         end
-
-        retval
+      rescue Errno::ENOENT
+        raise CouldNotExecuteError, "Could not run: #{cmd}\nMaybe it is not installed?"
       end
 
       def stats

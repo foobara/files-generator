@@ -1,3 +1,7 @@
+## [0.0.6] - 2025-05-03
+
+- Return consistent errors when unable to shell out commands
+
 ## [0.0.5] - 2025-05-03
 
 - Honor raise_if_fails even when the command to shell out to doesn't exist
