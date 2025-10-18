@@ -1,3 +1,7 @@
+## [0.1.1] - 2025-10-17
+
+- Do not fail if a previously-generated file has been deleted
+
 ## [0.0.6] - 2025-05-03
 
 - Return consistent errors when unable to shell out commands

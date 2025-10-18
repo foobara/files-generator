@@ -33,7 +33,7 @@ module Foobara
           file_list = JSON.parse(File.read(file_list_file))
 
           file_list.map do |file|
-            Thread.new { FileUtils.rm("#{output_directory}/#{file}") }
+            Thread.new { FileUtils.rm_f("#{output_directory}/#{file}") }
           end.each(&:join)
           # :nocov:
         end
