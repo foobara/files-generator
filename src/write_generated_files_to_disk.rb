@@ -1,3 +1,4 @@
+require "fileutils"
 require "open3"
 
 module Foobara

@@ -1,3 +1,7 @@
+## [0.1.2] - 2026-02-02
+
+- Fix bug where fileutils might not have been required yet
+
 ## [0.1.1] - 2025-10-17
 
 - Do not fail if a previously-generated file has been deleted
