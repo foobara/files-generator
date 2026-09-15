@@ -12,12 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     name: RSpec and Rubocop
     timeout-minutes: 3
+    strategy:
+      matrix:
+        ruby: [ '3.4', '4.0' ]
     steps:
       - uses: actions/checkout@v3
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ env.ruby_version }}
+          ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - name: Run rspec
         run: bundle exec rspec
