@@ -30,18 +30,20 @@ module Foobara
         file_list_file = "#{output_directory}/#{generated_files_json_filename}"
 
         if File.exist?(file_list_file)
-          # :nocov:
+          # simplecov:disable
           file_list = JSON.parse(File.read(file_list_file))
 
           file_list.map do |file|
             Thread.new { FileUtils.rm_f("#{output_directory}/#{file}") }
           end.each(&:join)
-          # :nocov:
+          # simplecov:enable
         end
       end
 
       def write_all_files_to_disk
+        # simplecov:disable
         if paths_to_source_code.key?(generated_files_json_filename)
+          # simplecov:enable
           write_file_to_disk(generated_files_json_filename, paths_to_source_code[generated_files_json_filename])
         end
 
@@ -61,9 +63,9 @@ module Foobara
 
         if key
           # TODO: test this path
-          # :nocov:
+          # simplecov:disable
           "#{key}-generator.json"
-          # :nocov:
+          # simplecov:enable
         else
           "foobara-generated.json"
         end
@@ -82,14 +84,14 @@ module Foobara
           exit_status = wait_thr.value
 
           unless exit_status.success?
-            # :nocov:
+            # simplecov:disable
             message = "Could not #{cmd}\n#{stderr.read}"
             if raise_if_fails
               raise CouldNotExecuteError, message
             else
               warn "WARNING: #{message}"
             end
-            # :nocov:
+            # simplecov:enable
           end
 
           exit_status
@@ -107,7 +109,7 @@ module Foobara
       end
 
       def run_cmd_and_return_output(cmd)
-        retval = ""
+        retval = +""
 
         Open3.popen3(cmd) do |_stdin, stdout, stderr, wait_thr|
           loop do
@@ -119,10 +121,10 @@ module Foobara
 
           exit_status = wait_thr.value
           unless exit_status.success?
-            # :nocov:
+            # simplecov:disable
             raise CouldNotExecuteError, "could not #{cmd}\n#{stderr.read}"
           end
-          # :nocov:
+          # simplecov:enable
         end
       rescue Errno::ENOENT
         raise CouldNotExecuteError, "Could not run: #{cmd}\nMaybe it is not installed?"

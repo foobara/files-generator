@@ -6,9 +6,9 @@ module Foobara
 
     class << self
       def manifest_to_generator_classes(_manifest)
-        # :nocov:
+        # simplecov:disable
         raise "subclass responsibility"
-        # :nocov:
+        # simplecov:enable
       end
 
       def generators_for(manifest)
@@ -40,9 +40,9 @@ module Foobara
       if file.end_with?(".erb")
         [*path, file[0..-5]]
       else
-        # :nocov:
+        # simplecov:disable
         raise "expected a .erb extension. Maybe override #target_path"
-        # :nocov:
+        # simplecov:enable
       end
     end
 
@@ -55,9 +55,9 @@ module Foobara
     end
 
     def generators_for(...)
-      # :nocov:
+      # simplecov:disable
       self.class.generators_for(...)
-      # :nocov:
+      # simplecov:enable
     end
 
     def generator_for(...)
@@ -86,9 +86,9 @@ module Foobara
     end
 
     def template_path
-      # :nocov:
+      # simplecov:disable
       raise "Subclass responsibility"
-      # :nocov:
+      # simplecov:enable
     end
 
     def absolute_template_path
@@ -102,9 +102,9 @@ module Foobara
     end
 
     def templates_dir
-      # :nocov:
+      # simplecov:disable
       "#{Dir.pwd}/templates"
-      # :nocov:
+      # simplecov:enable
     end
 
     def template_string
@@ -128,9 +128,9 @@ module Foobara
       if relevant_manifest.respond_to?(method_name)
         relevant_manifest.send(method_name, *, &)
       else
-        # :nocov:
+        # simplecov:disable
         super
-        # :nocov:
+        # simplecov:enable
       end
     end
 

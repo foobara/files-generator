@@ -9,9 +9,9 @@ module Foobara
       attr_accessor :element_to_generate
 
       def base_generator
-        # :nocov:
+        # simplecov:disable
         raise "subclass responsibility"
-        # :nocov:
+        # simplecov:enable
       end
 
       def elements_to_generate
@@ -60,7 +60,9 @@ module Foobara
       end
 
       def generate_element
+        # simplecov:disable
         return unless element_to_generate.applicable?
+        # simplecov:enable
 
         paths_to_source_code[Util.array(element_to_generate.target_path).join("/")] =
           element_to_generate.generate(elements_to_generate)

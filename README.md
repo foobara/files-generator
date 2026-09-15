@@ -1,15 +1,6 @@
 # Foobara::FilesGenerator
 
-Contains common-code useful in different code generators.
-
-## Development
-
-For local development, for now, run the following:
-
-```
-bundle config set local.foobara ../foobara
-bundle config set disable_local_branch_check true
-```
+Contains common-code useful in different Foobara generators
 
 ## Contributing
 

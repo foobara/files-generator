@@ -57,15 +57,15 @@ RSpec.describe Foobara::FilesGenerator do
       end
 
       def ==(other)
-        # :nocov:
+        # simplecov:disable
         other.is_a?(Foo) && bar == other.bar
-        # :nocov:
+        # simplecov:enable
       end
 
       def eql?(other)
-        # :nocov:
+        # simplecov:disable
         self == other
-        # :nocov:
+        # simplecov:enable
       end
 
       def hash
@@ -239,6 +239,8 @@ RSpec.describe Foobara::FilesGenerator do
 
       def run_post_generation_tasks
         bundle_install
+
+        # TODO: capture stdout so we don't see this in the terminal
         exit_status = run_cmd_and_write_output("echo hi")
 
         raise unless exit_status&.success?
