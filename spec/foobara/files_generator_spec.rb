@@ -91,7 +91,8 @@ RSpec.describe Foobara::FilesGenerator do
             [
               WhateverGenerator1,
               WhateverGenerator2,
-              ReadmeGenerator
+              ReadmeGenerator,
+              SymlinkGenerator
             ]
           when Foo
             FooGenerator
@@ -185,6 +186,16 @@ RSpec.describe Foobara::FilesGenerator do
     end
   end
 
+  let(:symlink_generator) do
+    stub_class "SymlinkGenerator", base_generator_class do
+      def target_path = "README_LINK.md"
+
+      def generate(_elements_to_generate)
+        Foobara::FilesGenerator::Symlink.new("README.md")
+      end
+    end
+  end
+
   let(:generate_whatever) do
     stub_class "GenerateWhatever", Foobara::Generators::Generate do
       inputs whatever: :duck
@@ -255,6 +266,7 @@ RSpec.describe Foobara::FilesGenerator do
     whatever_generator1
     whatever_generator2
     readme_generator
+    symlink_generator
     foo_generator
     bar_generator
     generate_whatever
@@ -277,8 +289,10 @@ RSpec.describe Foobara::FilesGenerator do
     expect(
       File.read("#{output_directory}bars/barrrr.txt").chomp
     ).to eq("Bar is #{bar.bar}")
+    expect(File.symlink?("#{output_directory}/README_LINK.md")).to be true
     expect(JSON.parse(File.read("#{output_directory}foobara-generated.json"))).to contain_exactly(
       "README.md",
+      "README_LINK.md",
       "bars/barrrr.txt",
       "foos/fooooo.txt",
       "non_templated.txt",

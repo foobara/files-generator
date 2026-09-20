@@ -1,3 +1,11 @@
+## [0.1.4] - 2026-09-19
+
+- Support creating symlinks
+
+## [0.1.3] - 2026-09-15
+
+- Fix deprecation warnings
+
 ## [0.1.2] - 2026-02-02
 
 - Fix bug where fileutils might not have been required yet

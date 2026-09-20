@@ -55,7 +55,19 @@ module Foobara
       def write_file_to_disk(path, contents)
         path = "#{output_directory}/#{path}"
         FileUtils.mkdir_p(File.dirname(path))
-        File.write(path, contents)
+
+        if contents.is_a?(FilesGenerator::Symlink)
+          if FilesGenerator::Symlink.supported?
+            File.symlink(contents, path)
+            # simplecov:disable
+          else
+            # TODO: come up with a way to test this path
+            FileUtils.cp_r(contents, path)
+            # simplecov:enable
+          end
+        else
+          File.write(path, contents)
+        end
       end
 
       def generated_files_json_filename
