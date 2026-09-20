@@ -1,3 +1,7 @@
+## [0.1.5] - 2026-09-20
+
+- Don't fail if symlink already exists
+
 ## [0.1.4] - 2026-09-19
 
 - Support creating symlinks

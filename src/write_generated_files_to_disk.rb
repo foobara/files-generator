@@ -48,7 +48,9 @@ module Foobara
         end
 
         paths_to_source_code.map do |path, contents|
-          Thread.new { write_file_to_disk(path, contents) unless path == generated_files_json_filename }
+          Thread.new do
+            write_file_to_disk(path, contents) unless path == generated_files_json_filename
+          end
         end.each(&:join)
       end
 
@@ -58,7 +60,11 @@ module Foobara
 
         if contents.is_a?(FilesGenerator::Symlink)
           if FilesGenerator::Symlink.supported?
-            File.symlink(contents, path)
+            # simplecov:disable
+            unless File.symlink?(path)
+              # simplecov:enable
+              File.symlink(contents, path)
+            end
             # simplecov:disable
           else
             # TODO: come up with a way to test this path
