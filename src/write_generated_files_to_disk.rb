@@ -20,42 +20,93 @@ module Foobara
 
       attr_accessor :paths_to_source_code
 
+      def empty_generated_files_json(version = FilesGenerator::VERSION)
+        {
+          files: [],
+          metadata: {
+            files_generator: version
+          }
+        }
+      end
+
       def generate_generated_files_json
-        paths_to_source_code[generated_files_json_filename] = "[\n#{
-          paths_to_source_code.keys.sort.map { |k| "  \"#{k}\"" }.join(",\n")
-        }\n]\n"
+        generated_files_hash = empty_generated_files_json
+        files = generated_files_hash[:files]
+
+        paths_to_source_code.keys.sort.each do |file_path|
+          generated_file = paths_to_source_code[file_path]
+          file_info = { file_path: }
+
+          start_marker = generated_file.start_marker
+          file_info[:start_marker] = start_marker if start_marker
+
+          end_marker = generated_file.end_marker
+          file_info[:end_marker] = end_marker if end_marker
+
+          files << file_info
+        end
+
+        content = JSON.generate(generated_files_hash)
+
+        paths_to_source_code[generated_files_json_filename] = FilesGenerator::Types::GeneratedFile.new(content:)
+      end
+
+      def old_generated_files_json_contents
+        file_list_file = "#{output_directory}/#{generated_files_json_filename}"
+
+        return unless File.exist?(file_list_file)
+
+        contents = JSON.parse(File.read(file_list_file))
+
+        if contents.is_a?(::Array)
+          file_paths = contents
+
+          contents = empty_generated_files_json("0.1.5")
+          files = contents[:files]
+
+          file_paths.each do |file_path|
+            files << FilesGenerator::Types::GeneratedFileRecord.new(file_path:)
+          end
+        else
+          contents = Util.deep_symbolize_keys(contents)
+
+          contents[:files].map! do |generated_file_data|
+            FilesGenerator::Types::GeneratedFileRecord.new(**generated_file_data)
+          end
+        end
+
+        contents
       end
 
       def delete_old_files_if_needed
-        file_list_file = "#{output_directory}/#{generated_files_json_filename}"
+        generated_files_info = old_generated_files_json_contents
 
-        if File.exist?(file_list_file)
-          # simplecov:disable
-          file_list = JSON.parse(File.read(file_list_file))
+        return unless generated_files_info
 
-          file_list.map do |file|
-            Thread.new { FileUtils.rm_f("#{output_directory}/#{file}") }
-          end.each(&:join)
-          # simplecov:enable
-        end
+        generated_files_info[:files].map do |generated_file_record|
+          Thread.new do
+            file_path = File.join(output_directory, generated_file_record.file_path)
+
+            if generated_file_record.start_marker
+              remove_generated_section_from_file(generated_file_record, file_path)
+            else
+              FileUtils.rm_f file_path
+            end
+          end
+        end.each(&:join)
       end
 
       def write_all_files_to_disk
-        # simplecov:disable
-        if paths_to_source_code.key?(generated_files_json_filename)
-          # simplecov:enable
-          write_file_to_disk(generated_files_json_filename, paths_to_source_code[generated_files_json_filename])
-        end
-
-        paths_to_source_code.map do |path, contents|
+        paths_to_source_code.map do |path, generated_file|
           Thread.new do
-            write_file_to_disk(path, contents) unless path == generated_files_json_filename
+            content = generated_file.content
+            write_file_to_disk(path, content) # unless path == generated_files_json_filename
           end
         end.each(&:join)
       end
 
       def write_file_to_disk(path, contents)
-        path = "#{output_directory}/#{path}"
+        path = File.join(output_directory, path)
         FileUtils.mkdir_p(File.dirname(path))
 
         if contents.is_a?(FilesGenerator::Symlink)
@@ -150,6 +201,39 @@ module Foobara
 
       def stats
         "Wrote #{paths_to_source_code.size} files to #{output_directory}"
+      end
+
+      def remove_generated_section_from_file(generated_file_record, file_path)
+        # simplecov:disable
+        return unless File.exist?(file_path)
+        # simplecov:enable
+
+        start_marker = generated_file_record.start_marker
+        end_marker = generated_file_record.end_marker
+
+        contents = File.read(file_path)
+
+        start_index = contents.index(start_marker)
+
+        # simplecov:disable
+        return unless start_index
+        # simplecov:enable
+
+        end_index = contents[(start_index + start_marker.size)..].index(end_marker)
+
+        # simplecov:disable
+        return unless end_index
+        # simplecov:enable
+
+        end_index += start_index + start_marker.size + 1
+        end_index += end_marker.size
+
+        keep_first = contents[0...start_index]
+        keep_last = contents[end_index..]
+
+        contents = keep_first + keep_last
+
+        File.write(file_path, contents)
       end
     end
   end

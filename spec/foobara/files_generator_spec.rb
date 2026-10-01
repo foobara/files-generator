@@ -262,6 +262,8 @@ RSpec.describe Foobara::FilesGenerator do
   end
 
   before do
+    FileUtils.rm_rf(output_directory)
+
     base_generator_class
     whatever_generator1
     whatever_generator2
@@ -273,10 +275,7 @@ RSpec.describe Foobara::FilesGenerator do
     write_whatever_to_disk
   end
 
-  it "generates files" do
-    expect(outcome).to be_success
-    expect(result).to match(/\d+ files to /)
-
+  def expect_resulting_files_to_be_correct
     expect(
       File.read("#{output_directory}whatevers1/fooooo.txt").chomp
     ).to eq("whatever1!\n\nFoo is #{foo.foo} and bar is #{bar.bar}")
@@ -290,7 +289,12 @@ RSpec.describe Foobara::FilesGenerator do
       File.read("#{output_directory}bars/barrrr.txt").chomp
     ).to eq("Bar is #{bar.bar}")
     expect(File.symlink?("#{output_directory}/README_LINK.md")).to be true
-    expect(JSON.parse(File.read("#{output_directory}foobara-generated.json"))).to contain_exactly(
+
+    generated_files_json = File.read(File.join(output_directory, "foobara-generated.json"))
+    generated_files_data = JSON.parse(generated_files_json)
+    files = generated_files_data["files"].map { it["file_path"] }
+
+    expect(files).to contain_exactly(
       "README.md",
       "README_LINK.md",
       "bars/barrrr.txt",
@@ -299,6 +303,23 @@ RSpec.describe Foobara::FilesGenerator do
       "whatevers1/fooooo.txt",
       "whatevers2/barrrr.txt"
     )
+  end
+
+  it "generates files" do
+    expect(outcome).to be_success
+    expect(result).to match(/\d+ files to /)
+
+    expect_resulting_files_to_be_correct
+
+    # let's see if it works when doing it twice...
+    new_command = WriteWhateverToDisk.new(whatever:, output_directory:)
+    new_outcome = new_command.run
+    new_result = new_outcome.result
+
+    expect(new_outcome).to be_success
+    expect(new_result).to match(/\d+ files to /)
+
+    expect_resulting_files_to_be_correct
   end
 
   describe "#target_dir" do
@@ -316,5 +337,26 @@ RSpec.describe Foobara::FilesGenerator do
   it "delegates to relevant manifest" do
     expect(generator).to respond_to(:bar)
     expect(generator).to_not respond_to(:baz)
+  end
+
+  context "when output directory has old-format foobara-generated.json" do
+    before do
+      FileUtils.mkdir_p(File.dirname(output_directory))
+      FileUtils.cp_r(
+        "#{__dir__}/../fixtures/existing-project-with-old-generator-json",
+        output_directory
+      )
+    end
+
+    it "generates files" do
+      Dir.chdir(output_directory) { expect(File).to exist("baz.txt") }
+
+      expect(outcome).to be_success
+      expect(result).to match(/\d+ files to /)
+
+      Dir.chdir(output_directory) { expect(File).to_not exist("baz.txt") }
+
+      expect_resulting_files_to_be_correct
+    end
   end
 end

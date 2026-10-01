@@ -3,8 +3,7 @@ require "find"
 module Foobara
   module Generators
     class Generate < Foobara::Command
-      # TODO: specify a better type?
-      result :associative_array
+      result :generate_result
 
       attr_accessor :element_to_generate
 
@@ -64,8 +63,14 @@ module Foobara
         return unless element_to_generate.applicable?
         # simplecov:enable
 
-        paths_to_source_code[Util.array(element_to_generate.target_path).join("/")] =
-          element_to_generate.generate(elements_to_generate)
+        path = Util.array(element_to_generate.target_path).join("/")
+        generated_code = element_to_generate.generate(elements_to_generate)
+
+        if generated_code.is_a?(::String)
+          generated_code = ::Foobara::FilesGenerator::Types::GeneratedFile.new(content: generated_code)
+        end
+
+        paths_to_source_code[path] = generated_code
       end
 
       def include_non_templated_files
@@ -79,7 +84,10 @@ module Foobara
 
           relative_path = file_path.relative_path_from(templates_dir_pathname)
 
-          paths_to_source_code[relative_path.to_s] = File.read(file_path)
+          content = File.read(file_path)
+
+          paths_to_source_code[relative_path.to_s] =
+            ::Foobara::FilesGenerator::Types::GeneratedFile.new(content:)
         end
       end
 

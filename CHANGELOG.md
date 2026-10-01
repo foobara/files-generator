@@ -1,3 +1,8 @@
+## [0.2.0] - 2026-10-02
+
+- Introduce a new foobara-generated.json format
+- Support start_marker/end_marker for adding/removing sections from an existing file
+
 ## [0.1.5] - 2026-09-20
 
 - Don't fail if symlink already exists
