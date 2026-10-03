@@ -1,5 +1,3 @@
-require "foobara/files_generator/bundler_actions"
-
 RSpec.describe Foobara::FilesGenerator do
   let(:whatever_class) do
     stub_class "Whatever" do

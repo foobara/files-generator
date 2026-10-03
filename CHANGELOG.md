@@ -1,3 +1,8 @@
+## [0.2.1] - 2026-10-03
+
+- Support an array of generator keys
+- Deprecate requiring "foobara/files_generator/bundler_actions"
+
 ## [0.2.0] - 2026-10-02
 
 - Introduce a new foobara-generated.json format

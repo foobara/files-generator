@@ -3,6 +3,7 @@ require "erb"
 module Foobara
   class FilesGenerator
     include TruncatedInspect
+    include BundlerActions
 
     class << self
       def manifest_to_generator_classes(_manifest)

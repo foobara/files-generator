@@ -1,5 +1,3 @@
-require "foobara/files_generator/bundler_actions"
-
 RSpec.describe Foobara::FilesGenerator do
   let(:whatever_class) { stub_class "Whatever" }
   let(:generator) { interpolating_generator.new(whatever) }

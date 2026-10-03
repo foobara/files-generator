@@ -1,5 +1,3 @@
-require "foobara/files_generator/bundler_actions"
-
 RSpec.describe Foobara::Generators::WriteGeneratedFilesToDisk do
   let(:output_directory) { "#{__dir__}/../tmp/w" }
   let(:writer) { described_class.new(output_directory:) }
