@@ -74,9 +74,23 @@ RSpec.describe Foobara::FilesGenerator do
     end
   end
 
-  let(:command) { WriteWhateverToDisk.new(whatever:, output_directory:) }
+  let(:command) do
+    WriteWhateverToDisk.new(whatever:, output_directory:).tap do
+      allow(it).to receive(:puts)
+    end
+  end
   let(:outcome) { command.run }
   let(:result) { outcome.result }
+
+  # Use these if wanting to run a second time
+  let(:new_command) do
+    WriteWhateverToDisk.new(whatever:, output_directory:).tap do
+      allow(it).to receive(:puts)
+    end
+  end
+  let(:new_outcome) { new_command.run }
+  let(:new_result) { new_outcome.result }
+
   let(:whatever) { whatever_class.new(foo, bar) }
   let(:foo) { foo_class.new("fooooo") }
   let(:bar) { bar_class.new("barrrr") }
@@ -307,21 +321,19 @@ RSpec.describe Foobara::FilesGenerator do
     )
   end
 
-  it "generates files" do
-    expect(outcome).to be_success
-    expect(result).to match(/\d+ files to /)
+  context "when running it twice" do
+    it "generates files" do
+      expect(outcome).to be_success
+      expect(result).to match(/\d+ files to /)
 
-    expect_resulting_files_to_be_correct
+      expect_resulting_files_to_be_correct
 
-    # let's see if it works when doing it twice...
-    new_command = WriteWhateverToDisk.new(whatever:, output_directory:)
-    new_outcome = new_command.run
-    new_result = new_outcome.result
+      # let's see if it works when doing it twice...
+      expect(new_outcome).to be_success
+      expect(new_result).to match(/\d+ files to /)
 
-    expect(new_outcome).to be_success
-    expect(new_result).to match(/\d+ files to /)
-
-    expect_resulting_files_to_be_correct
+      expect_resulting_files_to_be_correct
+    end
   end
 
   describe "#target_dir" do

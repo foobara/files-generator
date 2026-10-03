@@ -33,9 +33,12 @@ RSpec.describe Foobara::Generators::WriteGeneratedFilesToDisk do
       context "when not raise_if_fails" do
         let(:raise_if_fails) { false }
 
+        before do
+          allow(writer).to receive(:warn)
+        end
+
         it "does not raise" do
           expect {
-            # TODO: capture stderr so we don't see the warning in the terminal when running test suite
             writer.run_cmd_and_write_output(cmd, raise_if_fails:)
           }.to_not raise_error
         end
