@@ -131,10 +131,9 @@ module Foobara
         key = self.class.generator_key
 
         if key
-          # TODO: test this path
-          # simplecov:disable
+          key = key.first if key.is_a?(::Array)
+
           "#{key}-generator.json"
-          # simplecov:enable
         else
           "foobara-generated.json"
         end

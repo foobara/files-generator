@@ -42,4 +42,13 @@ RSpec.describe Foobara::Generators::WriteGeneratedFilesToDisk do
       end
     end
   end
+
+  describe "#generated_files_json_filename" do
+    context "when .generator_key is nil" do
+      it "is foobara-generated.json" do
+        expect(writer.class.generator_key).to be_nil
+        expect(writer.generated_files_json_filename).to eq("foobara-generated.json")
+      end
+    end
+  end
 end

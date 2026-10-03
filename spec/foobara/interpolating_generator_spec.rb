@@ -88,6 +88,8 @@ RSpec.describe Foobara::FilesGenerator do
 
   let(:write_whatever_to_disk) do
     stub_class "WriteWhateverToDisk", Foobara::Generators::WriteGeneratedFilesToDisk do
+      def self.generator_key = [:'preferred-key', :'deprecated-key']
+
       inputs do
         whatever Whatever, :required
         output_directory :string, :required
@@ -133,7 +135,7 @@ RSpec.describe Foobara::FilesGenerator do
       File.read("#{output_directory}/some-file.txt")
     ).to eq("A\n<!-- interpolating:begin -->\nB\n<!-- interpolating:end -->\nC\n")
 
-    generated_files_json = File.read(File.join(output_directory, "foobara-generated.json"))
+    generated_files_json = File.read(File.join(output_directory, "preferred-key-generator.json"))
     generated_files_data = JSON.parse(generated_files_json)
     files = generated_files_data["files"].map { it["file_path"] }
 
@@ -151,7 +153,7 @@ RSpec.describe Foobara::FilesGenerator do
       File.read("#{output_directory}/some-file.txt")
     ).to eq("A\n<!-- interpolating:begin -->\nB\n<!-- interpolating:end -->\nC\n")
 
-    generated_files_json = File.read(File.join(output_directory, "foobara-generated.json"))
+    generated_files_json = File.read(File.join(output_directory, "preferred-key-generator.json"))
     generated_files_data = JSON.parse(generated_files_json)
     files = generated_files_data["files"].map { it["file_path"] }
 

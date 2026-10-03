@@ -223,6 +223,8 @@ RSpec.describe Foobara::FilesGenerator do
 
   let(:write_whatever_to_disk) do
     stub_class "WriteWhateverToDisk", Foobara::Generators::WriteGeneratedFilesToDisk do
+      def self.generator_key = :'write-whatever'
+
       include Foobara::FilesGenerator::BundlerActions
 
       inputs do
@@ -290,7 +292,7 @@ RSpec.describe Foobara::FilesGenerator do
     ).to eq("Bar is #{bar.bar}")
     expect(File.symlink?("#{output_directory}/README_LINK.md")).to be true
 
-    generated_files_json = File.read(File.join(output_directory, "foobara-generated.json"))
+    generated_files_json = File.read(File.join(output_directory, "write-whatever-generator.json"))
     generated_files_data = JSON.parse(generated_files_json)
     files = generated_files_data["files"].map { it["file_path"] }
 
@@ -339,7 +341,7 @@ RSpec.describe Foobara::FilesGenerator do
     expect(generator).to_not respond_to(:baz)
   end
 
-  context "when output directory has old-format foobara-generated.json" do
+  context "when output directory has old-format write-whatever-generator.json" do
     before do
       FileUtils.mkdir_p(File.dirname(output_directory))
       FileUtils.cp_r(
