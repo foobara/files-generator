@@ -357,7 +357,7 @@ RSpec.describe Foobara::FilesGenerator do
     before do
       FileUtils.mkdir_p(File.dirname(output_directory))
       FileUtils.cp_r(
-        "#{__dir__}/../fixtures/existing-project-with-old-generator-json",
+        "#{__dir__}/fixtures/existing-project-with-old-generator-json",
         output_directory
       )
     end

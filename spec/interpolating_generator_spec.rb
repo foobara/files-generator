@@ -24,7 +24,7 @@ RSpec.describe Foobara::FilesGenerator do
           end
         end
 
-        def templates_dir = "#{__dir__}/../fixtures/templates"
+        def templates_dir = "#{__dir__}/fixtures/templates"
       end
 
       # TODO: do we really need this?
@@ -118,7 +118,7 @@ RSpec.describe Foobara::FilesGenerator do
 
   before do
     FileUtils.rm_rf(output_directory)
-    FileUtils.cp_r("#{__dir__}/../fixtures/existing-project", output_directory)
+    FileUtils.cp_r("#{__dir__}/fixtures/existing-project", output_directory)
 
     whatever_class
     base_generator_class
