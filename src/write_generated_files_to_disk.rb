@@ -1,5 +1,6 @@
 require "fileutils"
 require "open3"
+require_relative "../version"
 
 module Foobara
   module Generators

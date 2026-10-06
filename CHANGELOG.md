@@ -1,3 +1,7 @@
+## [0.2.3] - 2026-10-05
+
+- Make sure version.rb is loaded where it might be used
+
 ## [0.2.2] - 2026-10-05
 
 - Include version.rb in gem
