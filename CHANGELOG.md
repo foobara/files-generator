@@ -1,3 +1,7 @@
+## [0.2.2] - 2026-10-05
+
+- Include version.rb in gem
+
 ## [0.2.1] - 2026-10-03
 
 - Support an array of generator keys
