@@ -233,7 +233,11 @@ module Foobara
 
         contents = keep_first + keep_last
 
-        File.write(file_path, contents)
+        if contents.strip.empty?
+          FileUtils.rm_f(file_path)
+        else
+          File.write(file_path, contents)
+        end
       end
     end
   end
