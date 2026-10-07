@@ -1,3 +1,11 @@
+## [0.2.4] - 2026-10-06
+
+- Rotate generated files json with a deprecated name
+  to non-deprecated name if it has a deprecated name
+- If file contents are empty after deleting interpolated content
+  then delete the file instead of writing it
+- Add an InterpolatingGenerator mixin
+
 ## [0.2.3] - 2026-10-05
 
 - Make sure version.rb is loaded where it might be used

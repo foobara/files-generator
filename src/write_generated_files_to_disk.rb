@@ -249,7 +249,7 @@ module Foobara
         return unless end_index
         # simplecov:enable
 
-        end_index += start_index + start_marker.size + 1
+        end_index += start_index + start_marker.size
         end_index += end_marker.size
 
         keep_first = contents[0...start_index]
