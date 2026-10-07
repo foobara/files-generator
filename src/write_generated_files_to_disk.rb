@@ -79,7 +79,13 @@ module Foobara
         contents
       end
 
+      def old_generated_files_path(key = self.class.generator_key)
+        "#{output_directory}/#{generated_files_json_filename(key)}"
+      end
+
       def delete_old_files_if_needed
+        rotate_old_generated_files_json_if_needed
+
         generated_files_info = old_generated_files_json_contents
 
         return unless generated_files_info
@@ -95,6 +101,26 @@ module Foobara
             end
           end
         end.each(&:join)
+      end
+
+      def rotate_old_generated_files_json_if_needed
+        keys = self.class.generator_key
+
+        return unless keys.is_a?(::Array)
+
+        key, *deprecated_keys = keys
+
+        non_deprecated_path = old_generated_files_path(key)
+        return if File.exist?(non_deprecated_path)
+
+        deprecated_keys.each do |key|
+          path = old_generated_files_path(key)
+
+          if File.exist?(path)
+            FileUtils.mv(path, non_deprecated_path)
+            break
+          end
+        end
       end
 
       def write_all_files_to_disk
@@ -128,9 +154,7 @@ module Foobara
         end
       end
 
-      def generated_files_json_filename
-        key = self.class.generator_key
-
+      def generated_files_json_filename(key = self.class.generator_key)
         if key
           key = key.first if key.is_a?(::Array)
 

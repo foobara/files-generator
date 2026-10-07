@@ -15,7 +15,8 @@ RSpec.describe Foobara::FilesGenerator do
           case manifest
           when Whatever
             [
-              InterpolatingGenerator
+              InterpolatingGenerator1,
+              InterpolatingGenerator2
             ]
           else
             raise "wtf"
@@ -30,18 +31,18 @@ RSpec.describe Foobara::FilesGenerator do
     end
   end
 
-  let(:interpolating_generator) do
-    stub_class "InterpolatingGenerator", base_generator_class do
+  let(:interpolating_generator1) do
+    stub_class "InterpolatingGenerator1", base_generator_class do
       alias_method :whatever, :relevant_manifest
 
       def target_path = "some-file.txt"
       def template_path = "some-file.txt"
 
-      def start_marker = "<!-- interpolating:begin -->"
-      def end_marker = "<!-- interpolating:end -->"
+      def start_marker = "<!-- interpolating1:begin -->"
+      def end_marker = "<!-- interpolating1:end -->"
 
       def applicable?
-        File.exist?(template_path) && target_contents !~ /B/
+        File.exist?(template_path) && !target_contents.include?(start_marker)
       end
 
       def generate(_elements_to_generate)
@@ -62,6 +63,32 @@ RSpec.describe Foobara::FilesGenerator do
       end
 
       def target_contents = File.read(template_path)
+    end
+  end
+
+  let(:interpolating_generator2) do
+    stub_class "InterpolatingGenerator2", interpolating_generator1 do
+      def target_path = "some-file2.txt"
+      def template_path = "some-file2.txt"
+
+      def start_marker = "<!-- interpolating1:begin -->"
+      def end_marker = "<!-- interpolating1:end -->"
+      def applicable? = true
+
+      def generate(_elements_to_generate)
+        content = [
+          start_marker,
+          "hi!",
+          end_marker,
+          ""
+        ].join("\n")
+
+        if File.exist?(template_path)
+          content = "#{target_contents}\n#{content}"
+        end
+
+        { content:, start_marker:, end_marker: }
+      end
     end
   end
 
@@ -120,7 +147,7 @@ RSpec.describe Foobara::FilesGenerator do
 
     whatever_class
     base_generator_class
-    interpolating_generator
+    interpolating_generator2
     generate_whatever
     write_whatever_to_disk
   end
@@ -129,17 +156,25 @@ RSpec.describe Foobara::FilesGenerator do
     expect(outcome).to be_success
     expect(result).to match(/\d+ files to /)
 
+    expect(Dir.entries(output_directory)).to contain_exactly(
+      ".",
+      "..",
+      "preferred-key-generator.json",
+      "some-file.txt",
+      "some-file2.txt"
+    )
+
     expect(
       File.read("#{output_directory}/some-file.txt")
-    ).to eq("A\n<!-- interpolating:begin -->\nB\n<!-- interpolating:end -->\nC\n")
+    ).to eq("A\n<!-- interpolating1:begin -->\nB\n<!-- interpolating1:end -->\nC\n")
 
     generated_files_json = File.read(File.join(output_directory, "preferred-key-generator.json"))
     generated_files_data = JSON.parse(generated_files_json)
     files = generated_files_data["files"].map { it["file_path"] }
 
-    expect(files).to contain_exactly("some-file.txt")
+    expect(files).to contain_exactly("some-file.txt", "some-file2.txt")
 
-    # let's see if it works when doing it twice...
+    # let's see if it works when doing it twice
     new_command = WriteWhateverToDisk.new(whatever:, output_directory:)
     new_outcome = new_command.run
     new_result = new_outcome.result
@@ -147,14 +182,52 @@ RSpec.describe Foobara::FilesGenerator do
     expect(new_outcome).to be_success
     expect(new_result).to match(/\d+ files to /)
 
+    expect(Dir.entries(output_directory)).to contain_exactly(
+      ".",
+      "..",
+      "preferred-key-generator.json",
+      "some-file.txt",
+      "some-file2.txt"
+    )
+
     expect(
       File.read("#{output_directory}/some-file.txt")
-    ).to eq("A\n<!-- interpolating:begin -->\nB\n<!-- interpolating:end -->\nC\n")
+    ).to eq("A\n<!-- interpolating1:begin -->\nB\n<!-- interpolating1:end -->\nC\n")
 
     generated_files_json = File.read(File.join(output_directory, "preferred-key-generator.json"))
     generated_files_data = JSON.parse(generated_files_json)
     files = generated_files_data["files"].map { it["file_path"] }
 
-    expect(files).to contain_exactly("some-file.txt")
+    expect(files).to contain_exactly("some-file.txt", "some-file2.txt")
+
+    # let's see if it works when doing it a third time but with a deprecated key file name...
+    Dir.chdir output_directory do
+      FileUtils.mv("preferred-key-generator.json", "deprecated-key-generator.json")
+    end
+
+    new_command = WriteWhateverToDisk.new(whatever:, output_directory:)
+    new_outcome = new_command.run
+    new_result = new_outcome.result
+
+    expect(new_outcome).to be_success
+    expect(new_result).to match(/\d+ files to /)
+
+    expect(Dir.entries(output_directory)).to contain_exactly(
+      ".",
+      "..",
+      "preferred-key-generator.json",
+      "some-file.txt",
+      "some-file2.txt"
+    )
+
+    expect(
+      File.read("#{output_directory}/some-file.txt")
+    ).to eq("A\n<!-- interpolating1:begin -->\nB\n<!-- interpolating1:end -->\nC\n")
+
+    generated_files_json = File.read(File.join(output_directory, "preferred-key-generator.json"))
+    generated_files_data = JSON.parse(generated_files_json)
+    files = generated_files_data["files"].map { it["file_path"] }
+
+    expect(files).to contain_exactly("some-file.txt", "some-file2.txt")
   end
 end
